@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -13,14 +13,18 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useNavigate } from 'react-router-dom';
+import { Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
+import { AuthContext } from '../../Contexts/AuthPovider/AuthPovider';
 
 const drawerWidth = 240;
 const navItems = ['Login'];
+const settings = ['Logout'];
 
 function Navbar(props) {
     const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const navigate = useNavigate();
+    const { user, setUser, logout, accountType } = useContext(AuthContext);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -28,6 +32,35 @@ function Navbar(props) {
 
     const goToUrl = (url) => {
         navigate(url.toLowerCase());
+    }
+
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
+
+    const handleLogout = () => {
+        logout()
+            .then((result) => {
+                localStorage.removeItem('token');
+                setUser(null);
+            })
+            .catch((error) => { });
+        setAnchorElUser(null);
     }
 
 
@@ -41,7 +74,7 @@ function Navbar(props) {
                 {navItems.map((item) => (
                     <ListItem key={item} disablePadding>
                         <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} onClick={() => goToUrl(item)}/>
+                            <ListItemText primary={item} onClick={() => goToUrl(item)} />
                         </ListItemButton>
                     </ListItem>
 
@@ -53,9 +86,12 @@ function Navbar(props) {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
+
         <Box sx={{ display: 'flex' }}>
-            <AppBar component="nav">
-                <Toolbar>
+            <AppBar
+                component="nav"
+            >
+                <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -72,15 +108,91 @@ function Navbar(props) {
                     >
                         <Link to='/' className='router-link'> Sell-here.com</Link>
                     </Typography>
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        {navItems.map((item) => (
-                            <Link to={item.toLowerCase()} className='router-link'>
-                                <Button key={item} sx={{ color: '#fff' }}>
-                                    {item}
-                                </Button>
-                            </Link>
-                        ))}
-                    </Box>
+                    {
+                        user ?
+                            <>
+                                <Box sx={{
+                                    marginRight: "20px"
+                                }}>
+                                    {
+                                        accountType === 'admin' &&
+                                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/dashboard' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    Dashboard
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    }
+                                    {
+                                        accountType === 'seller' &&
+                                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/add-product' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    Add Product
+                                                </Button>
+                                            </Link>
+                                            <Link to='/my-products' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    My Products
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    }
+                                    {
+                                        accountType === 'buyer' &&
+                                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/my-orders' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    My Orders
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    }
+                                </Box>
+                                <Box sx={{ flexGrow: 0 }}>
+                                    <Tooltip title={user?.displayName}>
+                                        <IconButton
+                                            onClick={handleOpenUserMenu}
+                                            sx={{ p: 0 }}>
+                                            <Avatar alt="" src={user?.photoURL} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        sx={{ mt: '45px' }}
+                                        id="menu-appbar"
+                                        anchorEl={anchorElUser}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        keepMounted
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        open={Boolean(anchorElUser)}
+                                        onClose={handleCloseUserMenu}
+                                    >
+                                        {settings.map((setting) => (
+                                            <MenuItem key={setting} onClick={handleLogout}>
+                                                <Typography textAlign="center">{setting}</Typography>
+                                            </MenuItem>
+                                        ))}
+                                    </Menu>
+                                </Box>
+                            </>
+                            :
+                            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                {navItems.map((item) => (
+                                    <Link key={item} to={item.toLowerCase()} className='router-link'>
+                                        <Button sx={{ color: '#fff' }}>
+                                            {item}
+                                        </Button>
+                                    </Link>
+                                ))}
+                            </Box>
+                    }
                 </Toolbar>
             </AppBar>
             <Box component="nav">

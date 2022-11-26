@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
     baseURL: `${process.env.REACT_APP_API_URL}`,
-})
+});
 
 
 instance.interceptors.request.use(function (config) {
@@ -18,6 +18,7 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
     if (error.response.status === 401 || error.response.status === 403) {
         localStorage.removeItem('token');
+        window.location.href = '/login';
     }
     return Promise.reject(error);
 });

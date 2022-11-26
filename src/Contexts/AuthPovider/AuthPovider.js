@@ -9,6 +9,7 @@ import {
     updateProfile
 } from 'firebase/auth';
 import { app } from '../../firebase.config';
+import jwt_decode from "jwt-decode";
 
 export const AuthContext = createContext();
 
@@ -16,6 +17,7 @@ const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [accountType, setAccountType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     const thirdPartyLogin = (provider) => signInWithPopup(auth, provider);
@@ -31,8 +33,21 @@ const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {
+        if (user && localStorage.getItem('token')) {
+            const { accountType } = jwt_decode(localStorage.getItem('token'));
+            setAccountType(accountType);
+        } else {
+            setAccountType('');
+        }
+    }, [user]);
+
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
+            if (localStorage.getItem('token')) {
+                setUser(currentUser);
+                const { accountType } = jwt_decode(localStorage.getItem('token'));
+                setAccountType(accountType);
+            }
             setIsLoading(false);
         });
 
@@ -50,7 +65,9 @@ const AuthProvider = ({ children }) => {
         setUser,
         logout,
         isLoading,
-        setIsLoading
+        setIsLoading,
+        accountType,
+        setAccountType
     };
 
     return (
