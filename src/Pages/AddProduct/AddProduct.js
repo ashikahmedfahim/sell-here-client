@@ -1,6 +1,7 @@
 import { Button, Card, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../../AxiosConfig';
 import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
 
@@ -13,6 +14,7 @@ const AddProduct = () => {
         originalPrice: '',
         resalePrice: '',
         yearsOfUse: '',
+        yearOfPurchase: '',
         category: '',
         condition: '',
         description: '',
@@ -23,6 +25,7 @@ const AddProduct = () => {
     const [image, setImage] = useState(null);
     const [apiError, setApiError] = useState('');
     const { setMessage, setMessageType } = useContext(UtilityContext);
+    const navigate = useNavigate();
 
     const getCategories = async () => {
         try {
@@ -53,6 +56,7 @@ const AddProduct = () => {
             formData.append('originalPrice', formValues.originalPrice);
             formData.append('resalePrice', formValues.resalePrice);
             formData.append('yearsOfUse', formValues.yearsOfUse);
+            formData.append('yearOfPurchase', formValues.yearOfPurchase);
             formData.append('category', formValues.category);
             formData.append('condition', formValues.condition);
             formData.append('description', formValues.description);
@@ -63,18 +67,7 @@ const AddProduct = () => {
             if (response.data.insertedId) {
                 setMessage('Product added successfully');
                 setMessageType('success');
-                setImage(null);
-                setFormValues({
-                    name: '',
-                    location: '',
-                    originalPrice: '',
-                    resalePrice: '',
-                    yearsOfUse: '',
-                    category: '',
-                    condition: '',
-                    description: '',
-                    mobile: '',
-                });
+                navigate('/my-products');
             } else {
                 setMessage('Product not added');
                 setMessageType('error');
@@ -92,6 +85,7 @@ const AddProduct = () => {
             formValues.originalPrice &&
             formValues.resalePrice &&
             formValues.yearsOfUse &&
+            formValues.yearOfPurchase &&
             formValues.category &&
             formValues.condition &&
             formValues.description &&
@@ -233,6 +227,20 @@ const AddProduct = () => {
                         type='number'
                         name='yearsOfUse'
                         value={formValues.yearsOfUse}
+                        onChange={(event) => handleChange(event)}
+                        fullWidth
+                    />
+                    <TextField
+                        sx={{
+                            margin: "10px 0",
+                        }}
+                        id="outlined-basic"
+                        label="Years of Purchase"
+                        placeholder="Enter years of purchase"
+                        variant="outlined"
+                        type='number'
+                        name='yearOfPurchase'
+                        value={formValues.yearOfPurchase}
                         onChange={(event) => handleChange(event)}
                         fullWidth
                     />

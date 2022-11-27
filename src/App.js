@@ -17,6 +17,7 @@ import { UtilityContext } from './Contexts/UtilityPovider/UtilityPovider';
 import AddProduct from './Pages/AddProduct/AddProduct';
 import MyProducts from './Pages/MyProducts/MyProducts';
 import MyOrders from './Pages/MyOrders/MyOrders';
+import CategoryProducts from './Pages/CategoryProducts/CategoryProducts';
 
 const App = () => {
   const { message, messageType } = useContext(UtilityContext);
@@ -49,6 +50,7 @@ const App = () => {
           <Route path="add-product" element={<PrivateRoute><AddProduct /></PrivateRoute>} />
           <Route path="my-products" element={<PrivateRoute><MyProducts /></PrivateRoute>} />
           <Route path="my-orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />
+          <Route path="category/:id" element={<PrivateRoute><CategoryProducts /></PrivateRoute>} />
           {/* Not found route  */}
           <Route path="*" element={<NotFound />} />
         </Routes>

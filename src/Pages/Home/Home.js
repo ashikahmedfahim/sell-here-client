@@ -1,51 +1,135 @@
-import { Grid, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductCard from '../../Components/ProductCard/ProductCard';
 import BannerOne from '../../Images/banner.jpg';
+import axios from '../../AxiosConfig';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const [advertisedProducts, setAdvertisedProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const navigate = useNavigate();
+
+    const getAdvertisedProducts = async () => {
+        try {
+            const response = await axios.get('/advertised-products');
+            setAdvertisedProducts(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getCategories = async () => {
+        try {
+            const response = await axios.get('/categories');
+            setCategories(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        getAdvertisedProducts();
+        getCategories();
+    }, []);
+
     return (
         <>
             <img className='home-banner' src={BannerOne} alt='' />
-            <Box
-                sx={{
-                    padding: "50px 0",
-                }}
-            >
-                <Typography
-                    variant="h3"
+            {
+                advertisedProducts && advertisedProducts.length > 0 &&
+                <Box
                     sx={{
-                        marginBottom: "50px"
+                        padding: "50px 0",
                     }}
                 >
-                    Advertised Items
-                </Typography>
-                <Grid container spacing={2}>
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
-                </Grid>
-            </Box>
-            <Box
-                sx={{
-                    padding: "50px 0",
-                }}
-            >
-                <Typography
-                    variant="h3"
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            marginBottom: "50px"
+                        }}
+                    >
+                        Advertised Items
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {
+                            advertisedProducts.map(product => (
+                                <Grid key={product._id} item xs={12} md={4}>
+                                    <Card sx={{ minWidth: 275 }}>
+                                        <CardContent>
+                                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                Word of the Day
+                                            </Typography>
+                                            <Typography variant="h5" component="div">
+                                                fsdfdsf
+                                            </Typography>
+                                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                                adjective
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                well meaning and kindly.
+                                                <br />
+                                                {'"a benevolent smile"'}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button size="small">Learn More</Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </Box>
+            }
+            {
+                categories && categories.length > 0 &&
+                <Box
                     sx={{
-                        marginBottom: "50px"
+                        padding: "50px 0",
                     }}
                 >
-                    Categories
-                </Typography>
-                <Grid container spacing={2}>
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
-                </Grid>
-            </Box>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            marginBottom: "50px"
+                        }}
+                    >
+                        Categories
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {
+                            categories.map(category => (
+                                <Grid key={category.title} item xs={12} md={4}>
+                                    <Box
+                                        sx={{
+                                            height: "200px",
+                                            width: "100%",
+                                            backgroundColor: "grey",
+                                            borderRadius: "10px",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={() => navigate(`/category/${category._id}`)}
+                                    >
+                                        <Typography
+                                            variant="h5"
+                                            sx={{
+                                                color: "white",
+                                            }}
+                                        >
+                                            {category.title}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </Box>
+            }
             <Box
                 sx={{
                     padding: "50px 0",
