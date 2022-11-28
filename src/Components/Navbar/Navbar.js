@@ -71,14 +71,70 @@ function Navbar(props) {
             </Typography>
             <Divider />
             <List>
-                {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} onClick={() => goToUrl(item)} />
-                        </ListItemButton>
-                    </ListItem>
+                {
+                    user ?
+                        <>
+                            {
+                                accountType === 'admin' &&
+                                <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='Blogs' onClick={() => goToUrl('blogs')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='Dashboard' onClick={() => goToUrl('dashboard')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                </>
+                            }
+                            {
+                                accountType === 'buyer' &&
+                                <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='Blogs' onClick={() => goToUrl('blogs')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='My Orders' onClick={() => goToUrl('my-orders')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                </>
+                            }
+                            {
+                                accountType === 'seller' &&
+                                <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='Blogs' onClick={() => goToUrl('blogs')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='Add Product' onClick={() => goToUrl('add-product')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton sx={{ textAlign: 'center' }}>
+                                            <ListItemText primary='My Products' onClick={() => goToUrl('my-products')} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                </>
+                            }
+                        </>
+                        :
+                        navItems.map((item) => (
+                            <ListItem key={item} disablePadding>
+                                <ListItemButton sx={{ textAlign: 'center' }}>
+                                    <ListItemText primary={item} onClick={() => goToUrl(item)} />
+                                </ListItemButton>
+                            </ListItem>
 
-                ))}
+                        ))
+                }
             </List>
         </Box>
     );

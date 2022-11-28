@@ -10,11 +10,13 @@ import { Button } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import axios from '../../AxiosConfig';
 import Loading from '../Loading/Loading';
+import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
 
 
 export default function ReportedProductsTable() {
     const [reportedProducts, setReportedProducts] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
+    const { setMessage, setMessageType } = React.useContext(UtilityContext);
 
     const getReportedProducts = async () => {
         try {
@@ -33,9 +35,16 @@ export default function ReportedProductsTable() {
             const response = await axios.delete(`/products/${id}`);
             if (response.data.acknowledged) {
                 getReportedProducts();
+                setMessage('Product Deleted Successfully');
+                setMessageType('success');
+            } else {
+                setMessage('Something Went Wrong');
+                setMessageType('error');
             }
         } catch (error) {
             console.log(error);
+            setMessage('Something Went Wrong');
+            setMessageType('error');
         }
     }
 

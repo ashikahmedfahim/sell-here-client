@@ -6,11 +6,13 @@ import axios from '../../AxiosConfig';
 import ReportedProductsTable from '../../Components/ReportedProductsTable/ReportedProductsTable';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../../Components/Loading/Loading';
+import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
 
 const Dashboard = () => {
     const [selected, setSelected] = useState(1);
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { setMessage, setMessageType } = useContext(UtilityContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -26,9 +28,16 @@ const Dashboard = () => {
             const response = await axios.patch(`/verify-user/${id}`);
             if (response.data.acknowledged) {
                 getUserData(selected);
+                setMessage('User Verified Successfully');
+                setMessageType('success');
+            }else{
+                setMessage('Something Went Wrong');
+                setMessageType('error');
             }
         } catch (error) {
             console.log(error);
+            setMessage('Something Went Wrong');
+            setMessageType('error');
         }
     }
 
@@ -37,9 +46,16 @@ const Dashboard = () => {
             const response = await axios.delete(`/users/${id}`);
             if (response.data.acknowledged) {
                 getUserData(selected);
+                setMessage('User Deleted Successfully');
+                setMessageType('success');
+            }else{
+                setMessage('Something Went Wrong');
+                setMessageType('error');
             }
         } catch (error) {
             console.log(error);
+            setMessage('Something Went Wrong');
+            setMessageType('error');
         }
     }
 
