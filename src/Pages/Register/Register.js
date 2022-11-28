@@ -52,7 +52,7 @@ const Register = () => {
                             if (response.data.token) {
                                 localStorage.setItem('token', response.data.token);
                                 setUser(res?.user);
-                                navigate(from, { replace: true });
+                                navigate('/login');
                             }
                         })
                         .catch((err) => {

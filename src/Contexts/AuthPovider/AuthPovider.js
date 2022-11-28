@@ -44,9 +44,9 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (localStorage.getItem('token')) {
-                setUser(currentUser);
                 const { accountType } = jwt_decode(localStorage.getItem('token'));
                 setAccountType(accountType);
+                setUser(currentUser);
             }
             setIsLoading(false);
         });
