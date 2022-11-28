@@ -2,10 +2,16 @@ import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/m
 import { Box } from '@mui/system';
 import React from 'react';
 import DoneIcon from '@mui/icons-material/Done';
+import BookNow from '../BookNow/BookNow';
 
 const ProductCard = ({ product }) => {
+    const [open, setOpen] = React.useState(false);
     return (
         <Grid item xs={12} md={4}>
+            {
+                open &&
+                <BookNow open={open} setOpen={setOpen} product={product} />
+            }
             <Card sx={{ minWidth: 275 }}>
                 <CardContent>
                     <img src={product.imageUrl} alt='' width='100%' />
@@ -75,6 +81,7 @@ const ProductCard = ({ product }) => {
                     <Button
                         size="small"
                         variant="contained"
+                        onClick={() => setOpen(true)}
                     >
                         Book Now
                     </Button>
