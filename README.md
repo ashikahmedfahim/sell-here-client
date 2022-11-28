@@ -6,3 +6,6 @@
 - Buyer can book before buying.
 
 live link: http://ashik-ahmed-fahim.xyz/
+
+adminEmail: admin@admin.com
+adminPassword: admin123
