@@ -1,11 +1,13 @@
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, handleBreakpoints } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useContext } from 'react';
 import axios from '../../AxiosConfig';
 import Loading from '../../Components/Loading/Loading';
+import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
 
 const MyOrders = () => {
+    const { setMessage, setMessageType } = useContext(UtilityContext);
 
     const getMyOrders = async () => {
         try {
@@ -19,8 +21,27 @@ const MyOrders = () => {
 
     const {
         data: myOrders,
-        isLoading: myOrdersIsLoading
+        isLoading: myOrdersIsLoading,
+        refetch
     } = useQuery({ queryKey: ['advertisement'], queryFn: getMyOrders });
+
+    const handleBuyNow = async (id) => {
+        try {
+            const response = await axios.patch(`/buy-now/${id}`);
+            if (response.status === 200) {
+                setMessage('Product Bought Successfully');
+                setMessageType('success');
+                refetch();
+            } else {
+                setMessage('Something Went Wrong');
+                setMessageType('error');
+            }
+        } catch (error) {
+            console.log(error);
+            setMessage('Something Went Wrong');
+            setMessageType('error');
+        }
+    }
     return (
         <Grid
             container
@@ -51,11 +72,22 @@ const MyOrders = () => {
                                     <CardActions>
                                         {
                                             order.isSold ?
-                                                <Button variant="text">
-                                                    Already Bought
-                                                </Button>
+                                                order.isOwner ?
+                                                    <Button variant="text">
+                                                        Already Paid
+                                                    </Button>
+                                                    :
+                                                    <Button
+                                                        variant="text"
+                                                        color='error'
+                                                    >
+                                                        Already Sold
+                                                    </Button>
                                                 :
-                                                <Button variant="contained">
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => handleBuyNow(order._id)}
+                                                >
                                                     Pay
                                                 </Button>
                                         }
