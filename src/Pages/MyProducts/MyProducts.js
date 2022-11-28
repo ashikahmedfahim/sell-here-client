@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../AxiosConfig';
+import Loading from '../../Components/Loading/Loading';
 import MyProduct from '../../Components/MyProduct/MyProduct';
 import SellerProductCard from '../../Components/SellerProductCard/SellerProductCard';
 import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
@@ -8,13 +9,17 @@ import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
 const MyProducts = () => {
     const [products, setProducts] = useState([]);
     const { setMessage, setMessageType } = useContext(UtilityContext);
+    const [isLoading, setIsLoading] = useState(false);
 
     const getAllProducts = async () => {
         try {
+            setIsLoading(true);
             const response = await axios.get('/my-products');
             setProducts(response.data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -73,18 +78,34 @@ const MyProducts = () => {
                     My Products
                 </Typography>
             </Box>
-            <Grid container spacing={2}>
-                {
-                    products.map(product => (
-                        <SellerProductCard
-                            key={product._id}
-                            product={product}
-                            handleAdvertise={handleAdvertise}
-                            handleDelete={handleDelete}
-                        />
-                    ))
-                }
-            </Grid>
+            {
+                isLoading ?
+                    <Loading />
+                    :
+                    products && products.length > 0 ?
+                        <Grid container spacing={2}>
+                            {
+                                products.map(product => (
+                                    <SellerProductCard
+                                        key={product._id}
+                                        product={product}
+                                        handleAdvertise={handleAdvertise}
+                                        handleDelete={handleDelete}
+                                    />
+                                ))
+                            }
+                        </Grid>
+                        :
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                textAlign: "center",
+                                width: "100%",
+                            }}
+                        >
+                            No Products Found
+                        </Typography>
+            }
         </Grid>
     );
 };
