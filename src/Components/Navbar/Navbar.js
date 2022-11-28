@@ -117,6 +117,11 @@ function Navbar(props) {
                                     {
                                         accountType === 'admin' &&
                                         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/blogs' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    Blogs
+                                                </Button>
+                                            </Link>
                                             <Link to='/dashboard' className='router-link'>
                                                 <Button sx={{ color: '#fff' }}>
                                                     Dashboard
@@ -127,6 +132,11 @@ function Navbar(props) {
                                     {
                                         accountType === 'seller' &&
                                         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/blogs' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    Blogs
+                                                </Button>
+                                            </Link>
                                             <Link to='/add-product' className='router-link'>
                                                 <Button sx={{ color: '#fff' }}>
                                                     Add Product
@@ -142,6 +152,11 @@ function Navbar(props) {
                                     {
                                         accountType === 'buyer' &&
                                         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                            <Link to='/blogs' className='router-link'>
+                                                <Button sx={{ color: '#fff' }}>
+                                                    Blogs
+                                                </Button>
+                                            </Link>
                                             <Link to='/my-orders' className='router-link'>
                                                 <Button sx={{ color: '#fff' }}>
                                                     My Orders
