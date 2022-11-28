@@ -7,12 +7,8 @@ import axios from '../../AxiosConfig';
 import { useNavigate } from 'react-router-dom';
 import {
     useQuery,
-    useMutation,
-    useQueryClient,
-    QueryClient,
 } from '@tanstack/react-query';
 import Loading from '../../Components/Loading/Loading';
-const queryClient = new QueryClient();
 
 const Home = () => {
     const navigate = useNavigate();
