@@ -15,40 +15,37 @@ import Loading from '../../Components/Loading/Loading';
 const queryClient = new QueryClient();
 
 const Home = () => {
-    // const [advertisedProducts, setAdvertisedProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
     const getAdvertisedProducts = async () => {
         try {
             const response = await axios.get('/advertised-products');
             return response.data;
-            // setAdvertisedProducts(response.data);
         } catch (error) {
             console.log(error);
+            return [];
         }
     }
 
     const getCategories = async () => {
         try {
             const response = await axios.get('/categories');
-            setCategories(response.data);
+            return response.data;
         } catch (error) {
             console.log(error);
+            return [];
         }
     }
 
     const {
         data: advertisedProducts,
         isLoading: advertisementIsLoading
-    } = useQuery({ queryKey: [], queryFn: getAdvertisedProducts });
+    } = useQuery({ queryKey: ['advertisement'], queryFn: getAdvertisedProducts });
 
-
-
-    useEffect(() => {
-        getAdvertisedProducts();
-        getCategories();
-    }, []);
+    const {
+        data: categories,
+        isLoading: categoriesIsLoading
+    } = useQuery({ queryKey: ['category'], queryFn: getCategories });
 
     return (
         <>
@@ -96,51 +93,58 @@ const Home = () => {
                     </>
             }
             {
-                categories && categories.length > 0 &&
-                <Box
-                    sx={{
-                        padding: "50px 0",
-                    }}
-                >
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            marginBottom: "50px"
-                        }}
-                    >
-                        Categories
-                    </Typography>
-                    <Grid container spacing={2}>
+                categoriesIsLoading ?
+                    <Loading />
+                    :
+                    <>
                         {
-                            categories.map(category => (
-                                <Grid key={category.title} item xs={12} md={4}>
-                                    <Box
-                                        sx={{
-                                            height: "200px",
-                                            width: "100%",
-                                            backgroundColor: "grey",
-                                            borderRadius: "10px",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            cursor: "pointer",
-                                        }}
-                                        onClick={() => navigate(`/category/${category._id}`)}
-                                    >
-                                        <Typography
-                                            variant="h5"
-                                            sx={{
-                                                color: "white",
-                                            }}
-                                        >
-                                            {category.title}
-                                        </Typography>
-                                    </Box>
+                            categories && categories.length > 0 &&
+                            <Box
+                                sx={{
+                                    padding: "50px 0",
+                                }}
+                            >
+                                <Typography
+                                    variant="h3"
+                                    sx={{
+                                        marginBottom: "50px"
+                                    }}
+                                >
+                                    Categories
+                                </Typography>
+                                <Grid container spacing={2}>
+                                    {
+                                        categories.map(category => (
+                                            <Grid key={category._id} item xs={12} md={4}>
+                                                <Box
+                                                    sx={{
+                                                        height: "200px",
+                                                        width: "100%",
+                                                        backgroundColor: "grey",
+                                                        borderRadius: "10px",
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        cursor: "pointer",
+                                                    }}
+                                                    onClick={() => navigate(`/category/${category._id}`)}
+                                                >
+                                                    <Typography
+                                                        variant="h5"
+                                                        sx={{
+                                                            color: "white",
+                                                        }}
+                                                    >
+                                                        {category.title}
+                                                    </Typography>
+                                                </Box>
+                                            </Grid>
+                                        ))
+                                    }
                                 </Grid>
-                            ))
+                            </Box>
                         }
-                    </Grid>
-                </Box>
+                    </>
             }
             <Box
                 sx={{

@@ -1,6 +1,5 @@
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
-import axios from '../../AxiosConfig.js';
 
 const SellerProductCard = ({ product, handleAdvertise, handleDelete }) => {
 
