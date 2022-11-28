@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import Footer from './Components/Footer/Footer';
 import Navbar from './Components/Navbar/Navbar';
 import PrivateRoute from './Components/PrivateRoute/PrivateRoute';
-import Blog from './Pages/Blog/Blog';
+import Blogs from './Pages/Blogs/Blogs';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import Home from './Pages/Home/Home';
 import Login from './Pages/Login/Login';
@@ -39,7 +39,7 @@ const App = () => {
       <Container maxWidth="lg" className='min-height-80'>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="blog" element={<Blog />} />
+          <Route path="blogs" element={<Blogs />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           {/* private routes  */}
