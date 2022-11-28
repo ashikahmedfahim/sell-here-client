@@ -5,16 +5,25 @@ import ProductCard from '../../Components/ProductCard/ProductCard';
 import BannerOne from '../../Images/banner.jpg';
 import axios from '../../AxiosConfig';
 import { useNavigate } from 'react-router-dom';
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    QueryClient,
+} from '@tanstack/react-query';
+import Loading from '../../Components/Loading/Loading';
+const queryClient = new QueryClient();
 
 const Home = () => {
-    const [advertisedProducts, setAdvertisedProducts] = useState([]);
+    // const [advertisedProducts, setAdvertisedProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
     const getAdvertisedProducts = async () => {
         try {
             const response = await axios.get('/advertised-products');
-            setAdvertisedProducts(response.data);
+            return response.data;
+            // setAdvertisedProducts(response.data);
         } catch (error) {
             console.log(error);
         }
@@ -29,6 +38,13 @@ const Home = () => {
         }
     }
 
+    const {
+        data: advertisedProducts,
+        isLoading: advertisementIsLoading
+    } = useQuery({ queryKey: [], queryFn: getAdvertisedProducts });
+
+
+
     useEffect(() => {
         getAdvertisedProducts();
         getCategories();
@@ -38,40 +54,46 @@ const Home = () => {
         <>
             <img className='home-banner' src={BannerOne} alt='' />
             {
-                advertisedProducts && advertisedProducts.length > 0 &&
-                <Box
-                    sx={{
-                        padding: "50px 0",
-                    }}
-                >
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            marginBottom: "50px"
-                        }}
-                    >
-                        Advertised Items
-                    </Typography>
-                    <Grid container spacing={2}>
+                advertisementIsLoading ?
+                    <Loading />
+                    : <>
                         {
-                            advertisedProducts.map(product => (
-                                <Grid key={product._id} item xs={12} md={4}>
-                                    <Card sx={{ minWidth: 275 }}>
-                                        <CardContent>
-                                            <img src={product.imageUrl} alt='' height='330px' width='100%' />
-                                            <Typography variant="h5" component="div">
-                                                {product.name}
-                                            </Typography>
-                                            <Typography color="text.secondary">
-                                                Original Price: {product.originalPrice}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
+                            advertisedProducts && advertisedProducts.length > 0 &&
+                            <Box
+                                sx={{
+                                    padding: "50px 0",
+                                }}
+                            >
+                                <Typography
+                                    variant="h3"
+                                    sx={{
+                                        marginBottom: "50px"
+                                    }}
+                                >
+                                    Advertised Items
+                                </Typography>
+                                <Grid container spacing={2}>
+                                    {
+                                        advertisedProducts.map(product => (
+                                            <Grid key={product._id} item xs={12} md={4}>
+                                                <Card sx={{ minWidth: 275 }}>
+                                                    <CardContent>
+                                                        <img src={product.imageUrl} alt='' height='330px' width='100%' />
+                                                        <Typography variant="h5" component="div">
+                                                            {product.name}
+                                                        </Typography>
+                                                        <Typography color="text.secondary">
+                                                            Original Price: {product.originalPrice}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                        ))
+                                    }
                                 </Grid>
-                            ))
+                            </Box>
                         }
-                    </Grid>
-                </Box>
+                    </>
             }
             {
                 categories && categories.length > 0 &&
