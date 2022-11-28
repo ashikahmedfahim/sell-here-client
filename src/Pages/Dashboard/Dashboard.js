@@ -5,10 +5,12 @@ import UserTable from '../../Components/UserTable/UserTable';
 import axios from '../../AxiosConfig';
 import ReportedProductsTable from '../../Components/ReportedProductsTable/ReportedProductsTable';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Loading from '../../Components/Loading/Loading';
 
 const Dashboard = () => {
     const [selected, setSelected] = useState(1);
     const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -43,6 +45,7 @@ const Dashboard = () => {
 
     const getUserData = async (id) => {
         try {
+            setIsLoading(true);
             let accountType;
             if (id === 1) {
                 accountType = 'buyer';
@@ -54,6 +57,8 @@ const Dashboard = () => {
             setUsers(response.data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -97,12 +102,15 @@ const Dashboard = () => {
                     selected === 3 ?
                         <ReportedProductsTable />
                         :
-                        <UserTable
-                            users={users}
-                            handleVerify={handleVerify}
-                            handleDelete={handleDelete}
-                            accountType={selected === 1 ? 'buyer' : 'seller'}
-                        />
+                        isLoading ?
+                            <Loading />
+                            :
+                            <UserTable
+                                users={users}
+                                handleVerify={handleVerify}
+                                handleDelete={handleDelete}
+                                accountType={selected === 1 ? 'buyer' : 'seller'}
+                            />
                 }
             </Box>
         </div>
