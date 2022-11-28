@@ -3,9 +3,30 @@ import { Box } from '@mui/system';
 import React from 'react';
 import DoneIcon from '@mui/icons-material/Done';
 import BookNow from '../BookNow/BookNow';
+import { UtilityContext } from '../../Contexts/UtilityPovider/UtilityPovider';
+import axios from '../../AxiosConfig';
 
 const ProductCard = ({ product }) => {
     const [open, setOpen] = React.useState(false);
+    const { setMessage, setMessageType } = React.useContext(UtilityContext);
+
+    const handleReport = async (id) => {
+        try {
+            const response = await axios.patch(`/reported-products/${id}`);
+            if (response.status === 200) {
+                setMessage('Product Reported Successfully');
+                setMessageType('success');
+            }else{
+                setMessage('Something Went Wrong');
+                setMessageType('error');
+            }
+        } catch (error) {
+            console.log(error);
+            setMessage('Something Went Wrong');
+            setMessageType('error');
+        }
+    }
+
     return (
         <Grid item xs={12} md={4}>
             {
@@ -84,6 +105,14 @@ const ProductCard = ({ product }) => {
                         onClick={() => setOpen(true)}
                     >
                         Book Now
+                    </Button>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        color='error'
+                        onClick={() => handleReport(product._id)}
+                    >
+                        Report to Admin
                     </Button>
                 </CardActions>
             </Card>
